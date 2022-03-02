@@ -1,2 +1,2 @@
-# bcn_open_data_analysis
+# BCN Open data analysis
 Barcelona open data analysis mid-project
