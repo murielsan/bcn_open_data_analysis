@@ -1,148 +1,68 @@
-# Copyright 2018-2019 Streamlit Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-"""An example of showing geographic data."""
-
 import streamlit as st
+import pydeck as pdk
 import pandas as pd
 import numpy as np
-import altair as alt
-import pydeck as pdk
+from data.get_data import get_stations_list, get_station_pos
 
-# SETTING PAGE CONFIG TO WIDE MODE
-st.set_page_config(layout="wide")
+# This is needed to preserve session_state in the cloud. Not locally.
+st.session_state.update(st.session_state)
 
-# LOADING DATA
-DATE_TIME = "date/time"
-#DATA_URL = (
-#    "http://s3-us-west-2.amazonaws.com/streamlit-demo-data/uber-raw-data-sep14.csv.gz"
-#)
+# Page configuration
+st.set_page_config(page_title="BCN Open Data Analysis", page_icon="bcn_logo.png", layout="centered", initial_sidebar_state="auto", menu_items=None)
 
-@st.experimental_memo
-def load_data(nrows):
-    data = pd.read_csv("uber-raw-data-sep14.csv.gz", nrows=nrows)
-    lowercase = lambda x: str(x).lower()
-    data.rename(lowercase, axis="columns", inplace=True)
-    data[DATE_TIME] = pd.to_datetime(data[DATE_TIME])
-    return data
+#--- Default session_state
+if 'active_page' not in st.session_state:
+    st.session_state.active_page = 'Home'
+    st.session_state.slider1 = 0
+    st.session_state.check1 = False
+    st.session_state.radiobuttons = 'Home' 
 
-data = load_data(100000)
+#--- Code of each page
+def home():
+    st.title("BCN Open data analysis")
+    st.text("Only Air Quality for the moment")
+    data = get_stations_list()
 
-# CREATING FUNCTION FOR MAPS
+    ls = st.multiselect("Selecciona una estación", data)
+    positions = pd.DataFrame([get_station_pos(x)['Location']['coordinates'] for x in ls], columns=['lon','lat'])
 
-def map(data, lat, lon, zoom):
-    st.write(pdk.Deck(
-        map_style="mapbox://styles/mapbox/light-v9",
-        initial_view_state={
-            "latitude": lat,
-            "longitude": lon,
-            "zoom": zoom,
-            "pitch": 50,
-        },
+    st.pydeck_chart(pdk.Deck(
+        map_style="mapbox://styles/mapbox/dark-v9",
+        initial_view_state={"latitude": 41.3788,
+                            "longitude": 2.1331, "zoom": 11, "pitch": 50},
         layers=[
             pdk.Layer(
-                "HexagonLayer",
-                data=data,
-                get_position=["lon", "lat"],
-                radius=100,
-                elevation_scale=4,
-                elevation_range=[0, 1000],
-                pickable=True,
-                extruded=True,
+                'ScatterplotLayer',
+                data=positions,
+                get_position='[lon, lat]',
+                get_color='[30,144,255, 160]',
+                get_radius=200,
             ),
-        ]
+        ],
     ))
 
-# LAYING OUT THE TOP SECTION OF THE APP
-row1_1, row1_2 = st.columns((2,3))
+def slider():
+    st.write('Welcome to the slider page')
+    slide1 = st.slider('this is a slider',min_value=0,max_value=15,key='slider1' )    
+    st.write('Slider position:',slide1)
+    
+def contact():
+    st.title('Welcome to contact page')
+    st.write(f'Multipage app. Streamlit {st.__version__}')
+    if st.button('Click Contact'):
+        st.write('Welcome to contact page')
 
-with row1_1:
-    st.title("NYC Uber Ridesharing Data")
-    hour_selected = st.slider("Select hour of pickup", 0, 23)
+#--- Callback functions
+def CB_RadioButton():
+    st.session_state.active_page = st.session_state.radiobuttons
 
-with row1_2:
-    st.write(
-    """
-    ##
-    Examining how Uber pickups vary over time in New York City's and at its major regional airports.
-    By sliding the slider on the left you can view different slices of time and explore different transportation trends.
-    """)
+#--- Page selection
+st.sidebar.radio('Page Navigation', ['Home', 'Slider', 'Contact'], key='radiobuttons',on_change=CB_RadioButton)
 
-# FILTERING DATA BY HOUR SELECTED
-data = data[data[DATE_TIME].dt.hour == hour_selected]
-
-# LAYING OUT THE MIDDLE SECTION OF THE APP WITH THE MAPS
-row2_1, row2_2, row2_3, row2_4 = st.columns((2,1,1,1))
-
-# SETTING THE ZOOM LOCATIONS FOR THE AIRPORTS
-la_guardia= [40.7900, -73.8700]
-jfk = [40.6650, -73.7821]
-newark = [40.7090, -74.1805]
-zoom_level = 12
-midpoint = (np.average(data["lat"]), np.average(data["lon"]))
-
-with row2_1:
-    st.write("**All New York City from %i:00 and %i:00**" % (hour_selected, (hour_selected + 1) % 24))
-    map(data, midpoint[0], midpoint[1], 11)
-
-with row2_2:
-    st.write("**La Guardia Airport**")
-    map(data, la_guardia[0],la_guardia[1], zoom_level)
-
-with row2_3:
-    st.write("**JFK Airport**")
-    map(data, jfk[0],jfk[1], zoom_level)
-
-with row2_4:
-    st.write("**Newark Airport**")
-    map(data, newark[0],newark[1], zoom_level)
-
-# FILTERING DATA FOR THE HISTOGRAM
-filtered = data[
-    (data[DATE_TIME].dt.hour >= hour_selected) & (data[DATE_TIME].dt.hour < (hour_selected + 1))
-    ]
-
-hist = np.histogram(filtered[DATE_TIME].dt.minute, bins=60, range=(0, 60))[0]
-
-chart_data = pd.DataFrame({"minute": range(60), "pickups": hist})
-
-# LAYING OUT THE HISTOGRAM SECTION
-
-st.write("")
-
-st.write("**Breakdown of rides per minute between %i:00 and %i:00**" % (hour_selected, (hour_selected + 1) % 24))
-
-st.altair_chart(alt.Chart(chart_data)
-    .mark_area(
-        interpolate='step-after',
-    ).encode(
-        x=alt.X("minute:Q", scale=alt.Scale(nice=False)),
-        y=alt.Y("pickups:Q"),
-        tooltip=['minute', 'pickups']
-    ).configure_mark(
-        opacity=0.2,
-        color='red'
-    ), use_container_width=True)
-© 2022 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
+#--- Run the active page
+if   st.session_state.active_page == 'Home':
+    home()
+elif st.session_state.active_page == 'Slider':
+    slider()
+elif st.session_state.active_page == 'Contact':
+    contact()
