@@ -1,6 +1,9 @@
 import streamlit as st
 import pydeck as pdk
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import webcolors
 import random
 from datetime import date
 from data.get_data import get_stations_list, get_station_info, get_station_measures_st
@@ -13,13 +16,13 @@ st.set_page_config(page_title="BCN Open Data Analysis", page_icon="bcn_logo.png"
 
 #--- Default session_state
 if 'active_page' not in st.session_state:
-    st.session_state.active_page = 'Home'
+    st.session_state.active_page = 'Air Quality'
     st.session_state.slider1 = 0
     st.session_state.check1 = False
-    st.session_state.radiobuttons = 'Home' 
+    st.session_state.radiobuttons = 'Air Quality' 
 
 #--- Code of each page
-def home():  
+def air_quality():  
     
     st.title("BCN Open data analysis")
     st.text("Only Air Quality for the moment")
@@ -28,8 +31,9 @@ def home():
     # Select a different color for each station (we need to preserve it on reloads)
     if 'colors' not in st.session_state:
         colors = {}
-        for s in stations:
-            colors[s] = random.choices(range(256), k=3)
+        for s in range(len(stations)):
+            # Choose a different defined color from webcolors.HTML4_HEX_TO_NAMES dict
+            colors[stations[s]] = webcolors.HTML4_HEX_TO_NAMES[list(webcolors.HTML4_HEX_TO_NAMES.keys())[s]]
         st.session_state.colors = colors
     
     # Selector
@@ -43,26 +47,16 @@ def home():
     # Add a layer for each station
     color_layers = []
     for row in positions.iterrows():
-        print(row)
         color_layers.append(
             pdk.Layer(
                 'ScatterplotLayer',
                 data=pd.DataFrame([[row[1]['lon'],row[1]['lat']]], columns=['lon','lat']),
                 get_position='[lon,lat]',
-                get_fill_color=st.session_state.colors[row[1]['Station']],
+                get_fill_color=list(webcolors.name_to_rgb(st.session_state.colors[row[1]['Station']])),
                 get_radius=200
             )
         )
-    print(color_layers)
-
-    # Get air quality measures for each station
-    dt = st.date_input("Measures date",value=date(2018,11,1),max_value=date.today())
-    measures = []
-    for stat in stations_selected:
-        measures.append(pd.DataFrame(get_station_measures_st(stat,str(dt.year),str(dt.month),str(dt.day))))
-    if measures:
-        measures = pd.concat(measures)
-    
+   
     st.pydeck_chart(pdk.Deck(
         map_style="mapbox://styles/mapbox/dark-v9",
         initial_view_state={"latitude": 41.3788,
@@ -70,6 +64,24 @@ def home():
         layers=color_layers,
     ))
 
+    # Get air quality measures for each station
+    dt = st.date_input("Measures date",value=date(2018,11,1),max_value=date.today())
+    measures = []
+    for stat in stations_selected:
+        measures.append(pd.DataFrame(get_station_measures_st(stat,str(dt.year),str(dt.month),str(dt.day))))
+    if measures:
+        measures = pd.concat(measures, ignore_index=True) # Ignore index to avoid duplicates
+        # Set categorical order for Air Quality
+        measures['Air Quality'] = pd.Categorical(measures['Air Quality'],categories=['Good','Moderate','Poor'],ordered=True)
+        #fig = plt.figure(figsize=(10, 4))
+        fig,ax = plt.subplots(figsize=(10, 4))
+        sns.lineplot(x = "Hour", y = "Air Quality", hue="Station", data=measures, ax=ax, palette=st.session_state.colors)
+        ax.set_xticks(range(25))
+        st.pyplot(fig)
+
+        # Display dataframe
+        st.text('Raw Data')
+        st.dataframe(measures)
 
 def slider():
     st.write('Welcome to the slider page')
@@ -87,11 +99,11 @@ def CB_RadioButton():
     st.session_state.active_page = st.session_state.radiobuttons
 
 #--- Page selection
-st.sidebar.radio('Page Navigation', ['Home', 'Slider', 'Contact'], key='radiobuttons',on_change=CB_RadioButton)
+st.sidebar.radio('Page Navigation', ['Air Quality', 'Slider', 'Contact'], key='radiobuttons',on_change=CB_RadioButton)
 
 #--- Run the active page
-if   st.session_state.active_page == 'Home':
-    home()
+if st.session_state.active_page == 'Air Quality':
+    air_quality()
 elif st.session_state.active_page == 'Slider':
     slider()
 elif st.session_state.active_page == 'Contact':
