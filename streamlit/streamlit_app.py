@@ -1,8 +1,9 @@
 import streamlit as st
 import pydeck as pdk
 import pandas as pd
-import numpy as np
-from data.get_data import get_stations_list, get_station_pos
+import random
+from datetime import date
+from data.get_data import get_stations_list, get_station_info, get_station_measures_st
 
 # This is needed to preserve session_state in the cloud. Not locally.
 st.session_state.update(st.session_state)
@@ -18,28 +19,57 @@ if 'active_page' not in st.session_state:
     st.session_state.radiobuttons = 'Home' 
 
 #--- Code of each page
-def home():
+def home():  
+    
     st.title("BCN Open data analysis")
     st.text("Only Air Quality for the moment")
-    data = get_stations_list()
+    stations = get_stations_list()
 
-    ls = st.multiselect("Selecciona una estación", data)
-    positions = pd.DataFrame([get_station_pos(x)['Location']['coordinates'] for x in ls], columns=['lon','lat'])
+    # Select a different color for each station (we need to preserve it on reloads)
+    if 'colors' not in st.session_state:
+        colors = {}
+        for s in stations:
+            colors[s] = random.choices(range(256), k=3)
+        st.session_state.colors = colors
+    
+    # Selector
+    stations_selected = st.multiselect("Selecciona una estación", stations)
 
+    # Get station positions
+    positions = pd.DataFrame([get_station_info(x)['Location']['coordinates'] for x in stations_selected], columns=['lon','lat'])
+    # Add station name
+    positions['Station'] = [name for name in stations_selected]
+
+    # Add a layer for each station
+    color_layers = []
+    for row in positions.iterrows():
+        print(row)
+        color_layers.append(
+            pdk.Layer(
+                'ScatterplotLayer',
+                data=pd.DataFrame([[row[1]['lon'],row[1]['lat']]], columns=['lon','lat']),
+                get_position='[lon,lat]',
+                get_fill_color=st.session_state.colors[row[1]['Station']],
+                get_radius=200
+            )
+        )
+    print(color_layers)
+
+    # Get air quality measures for each station
+    dt = st.date_input("Measures date",value=date(2018,11,1),max_value=date.today())
+    measures = []
+    for stat in stations_selected:
+        measures.append(pd.DataFrame(get_station_measures_st(stat,str(dt.year),str(dt.month),str(dt.day))))
+    if measures:
+        measures = pd.concat(measures)
+    
     st.pydeck_chart(pdk.Deck(
         map_style="mapbox://styles/mapbox/dark-v9",
         initial_view_state={"latitude": 41.3788,
                             "longitude": 2.1331, "zoom": 11, "pitch": 50},
-        layers=[
-            pdk.Layer(
-                'ScatterplotLayer',
-                data=positions,
-                get_position='[lon, lat]',
-                get_color='[30,144,255, 160]',
-                get_radius=200,
-            ),
-        ],
+        layers=color_layers,
     ))
+
 
 def slider():
     st.write('Welcome to the slider page')
