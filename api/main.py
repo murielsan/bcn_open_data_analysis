@@ -7,6 +7,9 @@ app = FastAPI()
 # en otros archivos.
 app.include_router(air_quality_data.router)
 
+
 @app.get("/")
 async def root():
-    return {"message":"BCN open data analysis API. Endpoints info: https://github.com/murielsan/bcn_open_data_analysis/blob/main/README.md"}
+    return {"message": "BCN open data analysis API. Endpoints info: "
+            "https://github.com/murielsan/bcn_open_data_analysis/"
+            "blob/main/README.md"}
