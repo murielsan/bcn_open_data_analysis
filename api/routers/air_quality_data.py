@@ -35,11 +35,11 @@ def get_station_measures(name):
 
 # Measures from a station for a selected date
 @router.get("/stations/{name}/measures/{year}/{month}/{day}")
-def get_station_measures(name, year, month, day):
+def get_station_measures(name, year:int, month:int, day:int):
     try:
         res = get_data('pollution',
-                       filter={'Station': name, 'Year': int(year),
-                               'Month': int(month), 'Day': int(day)})
+                       filter={'Station': name, 'Year': year,
+                               'Month': month, 'Day': day})
         return loads(json_util.dumps(res))
     except Exception:
         return {"message": "No data found"}
