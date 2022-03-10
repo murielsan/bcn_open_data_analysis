@@ -1,0 +1,7 @@
+pandas
+matplotlib
+requests
+pydeck
+seaborn
+webcolors
+datetime
