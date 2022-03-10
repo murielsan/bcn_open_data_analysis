@@ -1,8 +1,10 @@
 from fastapi import APIRouter
 from bson import json_util
 from json import loads
-from database.mongo import get_data, insert_one_data, distinct
 from models.Measure import Measure
+from database.mongo import get_data, insert_one_data, distinct
+from utils.utils import get_air_quality
+
 
 
 # Population endpoint
@@ -46,15 +48,32 @@ def get_station_measures(name, year:int, month:int, day:int):
 
 
 # Insert new measure, according to Measure class
-@router.post("/insert/measure")
+@router.post("/new_measure/")
 async def insert_measure(measure: Measure):
     # Check if already inserted by station and hour of the day
     if len(get_data("pollution",
                     filter={'Station': measure.station, 'Hour': measure.hour,
                             'Year': measure.year, 'Month': measure.month,
                             'Day': measure.day})) == 0:
+        
+        # Get the rest of the data from the database
+        res = get_data('pollution',
+                       filter={'Station': measure.station},
+                       limit=1)
+        if len(res) != 0:
+            try:
+                measure.location = res[0]['Location']
+                measure.district = res[0]['District Name']
+                measure.nbhood = res[0]['Neighborhood Name']
+                measure.air_quality = get_air_quality(
+                                        measure.o3,
+                                        measure.no2,
+                                        measure.pm10
+                                        )
+            except:
+                return {"Error": "Couldn't find station data on database"}
 
-        inserted = insert_one_data(measure)
+        inserted = insert_one_data("pollution", measure.dict())
         return {"message": "Measure inserted correctly",
                 "id": str(inserted.inserted_id)}
     return {"message": "Data already in the database"}

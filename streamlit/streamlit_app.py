@@ -1,6 +1,7 @@
 import streamlit as st
 from datetime import date
 from pages.air_quality import show_air_quality
+from pages.new_air_measure import new_air_measure
 
 # This is needed to preserve session_state in the cloud. Not locally.
 st.session_state.update(st.session_state)
@@ -21,17 +22,7 @@ if 'active_page' not in st.session_state:
     st.session_state.radiobuttons = 'Air Quality'
 
 
-# Code of each page
-
-def slider():
-    st.write('Welcome to the slider page')
-    slide1 = st.slider(
-                    'this is a slider',
-                    min_value=0, max_value=15, key='slider1'
-                    )
-    st.write('Slider position:', slide1)
-
-
+# Code of contact page
 def contact():
     st.title('Contact')
     st.write('Jorge Muriel')
@@ -45,7 +36,7 @@ def CB_RadioButton():
 
 # Page selection
 st.sidebar.radio(
-            'Page Navigation', ['Air Quality', 'Slider', 'Contact'],
+            'Page Navigation', ['Air Quality', 'New air measure', 'Contact'],
             key='radiobuttons', on_change=CB_RadioButton
             )
 
@@ -53,7 +44,7 @@ st.sidebar.radio(
 # Run the active page
 if st.session_state.active_page == 'Air Quality':
     show_air_quality()
-elif st.session_state.active_page == 'Slider':
-    slider()
+elif st.session_state.active_page == 'New air measure':
+    new_air_measure()
 elif st.session_state.active_page == 'Contact':
     contact()

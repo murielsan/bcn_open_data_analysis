@@ -1,20 +1,18 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 
-# Creamos un modelo para la clase Pokemon. Todo parametro que no se
-# encuentre aqui, será ignorado, y si falta alguno de ellos, ocurrirá
-# un error y se indicará que falta el parametro.
+# Measure model. We'll get the rest of the data from the database
 class Measure(BaseModel):
-    station: str
-    hour: int
-    year: int
-    month: int
-    day: int
-    o3: Optional[float]
-    no2: Optional[float]
-    pm10: Optional[float]
-    longitude: float
-    latitude: float
-    district: Optional[str]
-    neighborhood: Optional[str]
+    station: str = Field(alias="Station")
+    hour: int = Field(alias="Hour")
+    year: int = Field(alias="Year")
+    month: int = Field(alias="Month")
+    day: int  = Field(alias="Day")
+    o3: Optional[float] = Field(alias="O3")
+    no2: Optional[float] = Field(alias="NO2")
+    pm10: Optional[float] = Field(alias="PM10")
+    location: Optional[dict] = Field(alias="Location")
+    district: Optional[str] = Field(alias="District Name")
+    nbhood: Optional[str] = Field(alias="Neighborhood Name")
+    air_quality: Optional[str] = Field(alias="Air Quality")

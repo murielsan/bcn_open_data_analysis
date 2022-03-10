@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import webcolors
 from datetime import date
-from data.get_data import get_stations_list, get_station_info, get_station_measures_st
+from data.api_mgr import get_stations_list, get_station_info, get_station_measures_st
 
 def show_air_quality():
 
