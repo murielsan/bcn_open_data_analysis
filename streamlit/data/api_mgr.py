@@ -21,7 +21,7 @@ def get_station_measures_st(name, year, month, day):
 
 def set_new_measure(station, hour, year, month, day, o3, no2, pm10):
     ms = {
-        'Station': station,
+        'station': station,
         'Hour': hour,        
         'Year': year,
         'Month': month,
@@ -29,5 +29,4 @@ def set_new_measure(station, hour, year, month, day, o3, no2, pm10):
         'O3': o3,
         'NO2': no2,
         'PM10': pm10}
-    print(ms)
     return requests.post(url+'/new_measure/', json=ms)
