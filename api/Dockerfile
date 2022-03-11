@@ -6,4 +6,7 @@ WORKDIR /api
 
 RUN pip install -r requirements.txt
 
-CMD ["uvicorn","main:app"]
+ENV PORT=8080
+
+# Command that will start the application
+CMD uvicorn main:app --host 0.0.0.0 --port=${PORT}
