@@ -21,7 +21,7 @@ def get_station_measures_st(name, year, month, day):
 
 def set_new_measure(station, hour, year, month, day, o3, no2, pm10):
     ms = {
-        'station': station,
+        'Station': station,
         'Hour': hour,        
         'Year': year,
         'Month': month,

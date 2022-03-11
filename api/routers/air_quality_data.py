@@ -73,7 +73,7 @@ async def insert_measure(measure: Measure):
             except:
                 return {"Error": "Couldn't find station data on database"}
 
-        inserted = insert_one_data("pollution", measure.dict())
+        inserted = insert_one_data("pollution", measure.dict(by_alias=True))
         return {"message": "Measure inserted correctly",
                 "id": str(inserted.inserted_id)}
     return {"message": "Data already in the database"}
