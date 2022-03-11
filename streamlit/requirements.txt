@@ -5,3 +5,4 @@ pydeck
 seaborn
 webcolors
 datetime
+streamlit

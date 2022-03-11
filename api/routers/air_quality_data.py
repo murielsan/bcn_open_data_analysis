@@ -60,7 +60,7 @@ async def insert_measure(measure: Measure):
         res = get_data('pollution',
                        filter={'Station': measure.station},
                        limit=1)
-        if len(res) != 0:
+        if len(res) > 0:
             try:
                 measure.location = res[0]['Location']
                 measure.district = res[0]['District Name']
