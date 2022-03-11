@@ -2,26 +2,27 @@
 Barcelona open data analysis mid-project
 
 ## Endpoints for the API
-[link url] (https://bcn-open-data-api.herokuapp.com/)
+url: https://bcn-open-data-api.herokuapp.com/
 
-**list_stations**:
+**list_stations**:<br>
 Returns a list of the stations which provide data
 
-**stations/{name}**
+**stations/{name}**:<br>
 Returns info for the station {name}, as from list_stations
 
-**stations/{name}/measures/**
+**stations/{name}/measures/**:<br>
 Returns all the measures from station {name}
 
-**sstations/{name}/measures/{year}/{month}/{day}**
+**sstations/{name}/measures/{year}/{month}/{day}**:<br>
 Returns measures from station {name} for the specified day
 
-**/new_measure/**
-POST command. Introduces a new measure into database
-Requires a dict with the following structure:
+**/new_measure/**:<br>
+POST command. Introduces a new measure into database<br>
+Requires a dict with the following structure:<br>
+```
     {
         *'Station': string,
-        *'Hour': integer,        
+        *'Hour': integer,
         *'Year': integer,
         *'Month': integer,
         *'Day': integer,
@@ -30,12 +31,13 @@ Requires a dict with the following structure:
         'PM10': float,
         'District Name': string,
         'Neighborhood Name': string,
-        'Air Quality': string}
+        'Air Quality': string
     }
-*Required fields
+    *Required fields
+```
 
 ## Streamlit APP
-[link url] (https://share.streamlit.io/murielsan/bcn_open_data_analysis)
+url: https://share.streamlit.io/murielsan/bcn_open_data_analysis
 
 ### Air Quality
 Select one or more stations. It will show the location of each station on the map, and the graphics for each measure (O3, NO2 and PM10) for each hour of the day.
