@@ -17,8 +17,6 @@ st.set_page_config(
 # Default session_state
 if 'active_page' not in st.session_state:
     st.session_state.active_page = 'Air Quality'
-    st.session_state.slider1 = 0
-    st.session_state.check1 = False
     st.session_state.radiobuttons = 'Air Quality'
 
 
