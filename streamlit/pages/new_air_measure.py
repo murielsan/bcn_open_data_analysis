@@ -26,5 +26,4 @@ def new_air_measure():
     
     # Every form must have a submit button.
     if st.button("Submit"):
-        st.write(station, hour, dt.year, dt.month, dt.day, o3, no2, pm10)
         set_new_measure(station, hour, dt.year, dt.month, dt.day, o3, no2, pm10)
