@@ -26,5 +26,6 @@ def new_air_measure():
             pm10 = st.number_input("PM10", value=0.0)
         
         # Every form must have a submit button.
-        if st.form_submit_button("Submit"):
+        button = st.form_submit_button("Submit")
+        if button:
             set_new_measure(station, hour, dt.year, dt.month, dt.day, o3, no2, pm10)

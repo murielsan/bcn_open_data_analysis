@@ -2,7 +2,7 @@ import requests
 import streamlit as st
 
 # Direccion de nuestra API
-url = "http://127.0.0.1:8000"
+url = "https://bcn-open-data-api.herokuapp.com"
 
 
 def get_stations_list():
