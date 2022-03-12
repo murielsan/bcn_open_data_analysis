@@ -24,6 +24,13 @@ def new_air_measure():
     with col6:
         pm10 = st.number_input("PM10", value=0.0)
     
+    # Authentication needed
+    col7, col8 = st.columns(2)
+    with col7:
+        user = st.text_input("Username", max_chars=12)
+    with col8:
+        password = st.text_input("Password", type="password")
+
     # Every form must have a submit button.
     if st.button("Submit"):
-        set_new_measure(station, hour, dt.year, dt.month, dt.day, o3, no2, pm10)
+        set_new_measure(station, hour, dt.year, dt.month, dt.day, o3, no2, pm10, user, password)
