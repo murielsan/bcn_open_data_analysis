@@ -52,6 +52,7 @@ def show_air_quality():
             )
         )
 
+    # Draw map
     st.pydeck_chart(pdk.Deck(
         map_style="mapbox://styles/mapbox/dark-v9",
         initial_view_state={"latitude": 41.3788,
