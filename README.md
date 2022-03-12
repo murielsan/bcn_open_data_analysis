@@ -37,7 +37,7 @@ Requires a dict with the following structure:<br>
 ```
 
 ## Streamlit APP
-url: https://share.streamlit.io/murielsan/bcn_open_data_analysis
+url: https://bcn-open-data-st.herokuapp.com/
 
 ### Air Quality
 Select one or more stations. It will show the location of each station on the map, and the graphics for each measure (O3, NO2 and PM10) for each hour of the day.
