@@ -19,7 +19,7 @@ def get_station_measures_st(name, year, month, day):
             url+f"/stations/{name}/measures/{year}/{month}/{day}"
         ).json()
 
-def set_new_measure(station, hour, year, month, day, o3, no2, pm10):
+def set_new_measure(station, hour, year, month, day, o3, no2, pm10, user, password):
     ms = {
         'Station': station,
         'Hour': hour,        
@@ -29,4 +29,9 @@ def set_new_measure(station, hour, year, month, day, o3, no2, pm10):
         'O3': o3,
         'NO2': no2,
         'PM10': pm10}
-    return requests.post(url+'/new_measure/', json=ms)
+    # Send authentication on header
+    head = {
+        'User': user,
+        'Password': password
+        }
+    return requests.post(url+'/new_measure/', json=ms, headers=head)

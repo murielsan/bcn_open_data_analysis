@@ -1,8 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Header
 from bson import json_util
 from json import loads
 from models.Measure import Measure
-from database.mongo import get_data, insert_one_data, distinct
+from database.mongo import get_data, insert_one_data, distinct, insert_one_with_pass
 from utils.utils import get_air_quality
 
 
@@ -49,7 +49,11 @@ def get_station_measures(name, year:int, month:int, day:int):
 
 # Insert new measure, according to Measure class
 @router.post("/new_measure/")
-async def insert_measure(measure: Measure):
+async def insert_measure(measure: Measure, user: str = Header(None), password: str = Header(None)):
+    # Check if user and password have been specified
+    if not user or not password:
+        return {"message":"Invalid user or password"}
+    
     # Check if already inserted by station and hour of the day
     if len(get_data("pollution",
                     filter={'Station': measure.station, 'Hour': measure.hour,
@@ -73,7 +77,11 @@ async def insert_measure(measure: Measure):
             except:
                 return {"Error": "Couldn't find station data on database"}
 
-        inserted = insert_one_data("pollution", measure.dict(by_alias=True))
+        #inserted = insert_one_data("pollution", measure.dict(by_alias=True))
+        inserted = insert_one_with_pass(user, password, "pollution", measure.dict(by_alias=True))
+        if not inserted:
+            return {"message":"Couldn't connect to database"}
+
         return {"message": "Measure inserted correctly",
                 "id": str(inserted.inserted_id)}
     return {"message": "Data already in the database"}
