@@ -1,7 +1,9 @@
+from fileinput import filename
 import streamlit as st
 import pydeck as pdk
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
 import seaborn as sns
 import webcolors
 from datetime import date
@@ -23,7 +25,7 @@ def show_air_quality():
         st.session_state.colors = colors
 
     # Selector
-    stations_selected = st.multiselect("Selecciona una estación", stations)
+    stations_selected = st.multiselect("Selecciona una estación", stations)    
 
     # Get station positions
     positions = pd.DataFrame(
@@ -62,6 +64,7 @@ def show_air_quality():
                     "Measures date",
                     value=date(2018, 11, 1),
                     max_value=date.today())
+
     measures = []
     for stat in stations_selected:
         measures.append(pd.DataFrame(get_station_measures_st(
@@ -75,6 +78,7 @@ def show_air_quality():
         #                             measures['Air Quality'],
         #                             categories=['Good', 'Moderate', 'Poor'],
         #                            ordered=True)
+        pdf_file = PdfPages('Output.pdf')
 
         col1, col2 = st.columns(2)
         col3, col4 = st.columns(2)
@@ -85,18 +89,21 @@ def show_air_quality():
             x="Hour", y="O3", hue="Station",
             data=measures, ax=ax, palette=st.session_state.colors)
         ax.set_xticks(range(24))
+        pdf_file.savefig(fig1)
 
         fig2,ax2 = plt.subplots(figsize=(10, 4))
         sns.lineplot(
             x="Hour", y="NO2", hue="Station",
             data=measures, ax=ax2, palette=st.session_state.colors)
         ax2.set_xticks(range(24))
+        pdf_file.savefig(fig2)
 
         fig3,ax3 = plt.subplots(figsize=(10, 4))
         sns.lineplot(
             x="Hour", y="PM10", hue="Station",
             data=measures, ax=ax3, palette=st.session_state.colors)
         ax3.set_xticks(range(24))
+        pdf_file.savefig(fig3)
 
         # Pie chart, where the slices will be ordered and plotted counter-clockwise:  
         values = measures['Air Quality'].value_counts()
@@ -107,6 +114,9 @@ def show_air_quality():
         ax4.pie(sizes, labels=labels, autopct='%1.1f%%',
                 shadow=True, startangle=90)
         ax4.axis('equal')
+        pdf_file.savefig(fig4)
+        pdf_file.close()
+        
         
         col1.pyplot(fig1)
         col1.write('O3: less is better')
@@ -116,6 +126,11 @@ def show_air_quality():
         col3.write('PM10: less is better')
         col4.pyplot(fig4)
         col4.write('Air Quality: Percentage of quality hours')
+
+        # Convert to binary
+        with open('Output.pdf', 'rb') as f:
+            fn = f"bcn_air_quality_{date.today()}.pdf"
+            st.download_button("Save to PDF", f, file_name=fn)
 
         # Display dataframe
         st.text('Raw Data')
