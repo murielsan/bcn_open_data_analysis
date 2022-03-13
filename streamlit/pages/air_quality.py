@@ -15,7 +15,7 @@ from utils.utils import send_email
 def show_air_quality():
 
     st.title("BCN Open data analysis")
-    st.text("Only Air Quality for the moment")
+    st.text("Air Quality")
     stations = get_stations_list()
 
     # Select a different color for each station (saved to preserve)

@@ -35,3 +35,9 @@ def set_new_measure(station, hour, year, month, day, o3, no2, pm10, user, passwo
         'Password': password
         }
     return requests.post(url+'/new_measure/', json=ms, headers=head)
+
+def get_bicing_stations_list():
+    return requests.get(url+"/list_bicing_stations").json()
+
+def get_bicing_stations_near(lon, lat, radio):
+    return requests.get(url+f"/get_bicing_stations_near/{lon}/{lat}/{radio}").json()

@@ -2,6 +2,7 @@ import streamlit as st
 from datetime import date
 from pages.air_quality import show_air_quality
 from pages.new_air_measure import new_air_measure
+from pages.bicing import bicing
 
 # This is needed to preserve session_state in the cloud. Not locally.
 st.session_state.update(st.session_state)
@@ -34,7 +35,7 @@ def CB_RadioButton():
 
 # Page selection
 st.sidebar.radio(
-            'Page Navigation', ['Air Quality', 'New air measure', 'Contact'],
+            'Page Navigation', ['Air Quality', 'New air measure', 'Bicing', 'Contact'],
             key='radiobuttons', on_change=CB_RadioButton
             )
 
@@ -44,5 +45,7 @@ if st.session_state.active_page == 'Air Quality':
     show_air_quality()
 elif st.session_state.active_page == 'New air measure':
     new_air_measure()
+elif st.session_state.active_page == 'Bicing':
+    bicing()
 elif st.session_state.active_page == 'Contact':
     contact()

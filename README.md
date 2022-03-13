@@ -1,9 +1,10 @@
 # BCN Open data analysis
 Barcelona open data analysis mid-project
 
-## Endpoints for the API
+# API Endpoints
 url: https://bcn-open-data-api.herokuapp.com/
 
+## Air Quality
 ### - **list_stations**:<br>
 Returns a list of the stations which provide data
 
@@ -100,8 +101,28 @@ Requires a dict with the following structure:<br>
     }
     *Required fields
 ```
+## Bicing stations
+### - **list_bicing_stations**:<br>
+Returns the complete list of bicing stations. Example:
+```
+    [
+        {"Name":"Pl Tetuan, 15","Street name":"Pl Tetuan","Street number":15,"Neighborhood name":"la Dreta de l Eixample","District name":"Eixample","Zip code":8010,"Location":{"type":"Point","coordinates":[2.17475743146867,41.3946851545578]}},
+        {"Name":"Pl Tetuan, 8","Street name":"Pl Tetuan","Street number":8,"Neighborhood name":"la Dreta de l Eixample","District name":"Eixample","Zip code":8010,"Location":{"type":"Point","coordinates":[2.17528363937079,41.3943067790178]}}
+        ...
+    ]
+```
 
-## Streamlit APP
+### - **get_bicing_stations_near/{lon}/{lat}/{radio}**:<br>
+Returns the list of bicing stations in the specified radio(meters). Example:
+```
+    [
+        {"Name":"Pl Tetuan, 15","Street name":"Pl Tetuan","Street number":15,"Neighborhood name":"la Dreta de l Eixample","District name":"Eixample","Zip code":8010,"Location":{"type":"Point","coordinates":[2.17475743146867,41.3946851545578]}},
+        {"Name":"Pl Tetuan, 8","Street name":"Pl Tetuan","Street number":8,"Neighborhood name":"la Dreta de l Eixample","District name":"Eixample","Zip code":8010,"Location":{"type":"Point","coordinates":[2.17528363937079,41.3943067790178]}}
+        ...
+    ]
+```
+
+# Streamlit APP
 url: https://bcn-open-data-st.herokuapp.com/
 
 ### Air Quality
