@@ -52,7 +52,36 @@ Returns measures from station {name} for the specified day. Example:
     ]
 ```
 
-**/new_measure/**:<br>
+**stations/{name}/average/{year}**:<br>
+Returns average measures from a Station for a specific year. Example:
+```
+    [
+        {
+            "O3_avg":0.0,
+            "NO2_avg":33,
+            "PM10_avg":0.0,
+            "Station":"Sants",
+            "Year":2018
+        }
+    ]
+```
+
+**stations/{name}/average/{year}/{month}**:<br>
+Returns average measures from a Station for a specific month of the year. Example:
+```
+    [
+        {
+            "O3_avg":0.0,
+            "NO2_avg":32.93769470404985,
+            "PM10_avg":0.0,
+            "Station":"Sants",
+            "Year":2018,
+            "Month":11
+        }
+    ]
+```
+
+**new_measure**:<br>
 POST command. Introduces a new measure into database<br>
 Requires a dict with the following structure:<br>
 ```

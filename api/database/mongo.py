@@ -19,6 +19,10 @@ def distinct(collection, field):
     return db[collection].distinct(field)
 
 
+def aggregation(collection, pipeline):
+    return db[collection].aggregate(pipeline)
+
+
 def insert_one_with_pass(user, password, collection, data):
     srv = os.getenv("CLUSTER")
     try:
