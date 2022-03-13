@@ -2,7 +2,7 @@ from fastapi import APIRouter, Header
 from bson import json_util
 from json import loads
 from models.Measure import Measure
-from database.mongo import get_data, insert_one_data, distinct, insert_one_with_pass
+from database.mongo import get_data, insert_one_data, distinct, insert_one_with_pass, aggregation
 from utils.utils import get_air_quality
 
 
@@ -20,7 +20,7 @@ def get_station_list():
 
 # Get station info
 @router.get("/stations/{name}")
-def get_station_info(name):
+def get_station_info(name: str):
     res = get_data('pollution', filter={'Station': name},
                    project={'Station': 1, 'Location': 1, 'District Name': 1,
                             'Neighborhood name': 1, '_id': 0},
@@ -30,14 +30,14 @@ def get_station_info(name):
 
 # All the measures from a station
 @router.get("/stations/{name}/measures/")
-def get_station_measures(name):
+def get_station_measures(name: str):
     res = get_data('pollution', filter={'Station': name})
     return loads(json_util.dumps(res))
 
 
 # Measures from a station for a selected date
 @router.get("/stations/{name}/measures/{year}/{month}/{day}")
-def get_station_measures(name, year:int, month:int, day:int):
+def get_station_measures(name: str, year:int, month:int, day:int):
     try:
         res = get_data('pollution',
                        filter={'Station': name, 'Year': year,
@@ -45,6 +45,87 @@ def get_station_measures(name, year:int, month:int, day:int):
         return loads(json_util.dumps(res))
     except Exception:
         return {"message": "No data found"}
+
+
+# Average measures from a specified station and year
+@router.get("/stations/{name}/average/{year}")
+def get_station_mean(name: str, year: int):
+    try:
+        pipe = [{
+                '$match': {'Station': name, 'Year': year}
+            },
+            {
+                '$group': {
+                    "_id": None,
+                    'O3_avg': {
+                        '$avg': '$O3'
+                    },
+                    'NO2_avg': {
+                        '$avg': '$NO2'
+                    },
+                    'PM10_avg': {
+                        '$avg': '$PM10'
+                    },
+                    'Station': {
+                        '$first': '$Station'
+                    },
+                    'Year':  {
+                        '$first': '$Year'
+                    }
+                }
+            },
+            {
+                '$project': {
+                    '_id':0
+                }
+            }
+            ]
+        res = aggregation('pollution', pipe)
+        return loads(json_util.dumps(list(res)))
+    except Exception:
+        return {"message": "No data found"}    
+
+
+# Average for a station on a specific month
+@router.get("/stations/{name}/average/{year}/{month}")
+def get_station_mean(name: str, year: int, month: int):
+    try:
+        pipe = [{
+                '$match': {'Station': name, 'Year': year, 'Month': month}
+            },
+            {
+                '$group': {
+                    "_id": None,
+                    'O3_avg': {
+                        '$avg': '$O3'
+                    },
+                    'NO2_avg': {
+                        '$avg': '$NO2'
+                    },
+                    'PM10_avg': {
+                        '$avg': '$PM10'
+                    },
+                    'Station': {
+                        '$first': '$Station'
+                    },
+                    'Year':  {
+                        '$first': '$Year'
+                    },
+                    'Month': {
+                        '$first': '$Month'
+                    }
+                }
+            },
+            {
+                '$project': {
+                    '_id':0
+                }
+            }
+            ]
+        res = aggregation('pollution', pipe)
+        return loads(json_util.dumps(list(res)))
+    except Exception:
+        return {"message": "No data found"} 
 
 
 # Insert new measure, according to Measure class
