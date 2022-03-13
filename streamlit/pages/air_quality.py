@@ -1,4 +1,7 @@
 from fileinput import filename
+import random
+import os
+import base64
 import streamlit as st
 import pydeck as pdk
 import pandas as pd
@@ -8,6 +11,7 @@ import seaborn as sns
 import webcolors
 from datetime import date
 from data.api_mgr import get_stations_list, get_station_info, get_station_measures_st
+from utils.utils import send_email
 
 def show_air_quality():
 
@@ -25,7 +29,7 @@ def show_air_quality():
         st.session_state.colors = colors
 
     # Selector
-    stations_selected = st.multiselect("Selecciona una estación", stations)    
+    stations_selected = st.multiselect("Please, select a station", stations)    
 
     # Get station positions
     positions = pd.DataFrame(
@@ -79,7 +83,8 @@ def show_air_quality():
         #                             measures['Air Quality'],
         #                             categories=['Good', 'Moderate', 'Poor'],
         #                            ordered=True)
-        pdf_file = PdfPages('Output.pdf')
+        pdf_rand_name = f"Output{random.randint(0,65535)}.pdf"
+        pdf_file = PdfPages(pdf_rand_name)
 
         col1, col2 = st.columns(2)
         col3, col4 = st.columns(2)
@@ -128,10 +133,24 @@ def show_air_quality():
         col4.pyplot(fig4)
         col4.write('Air Quality: Percentage of quality hours')
 
-        # Convert to binary
-        with open('Output.pdf', 'rb') as f:
-            fn = f"bcn_air_quality_{date.today()}.pdf"
-            st.download_button("Save to PDF", f, file_name=fn)
+        col5,col6 = st.columns([1,2])
+        # Download button
+        with col5:
+            st.write('Get your results')
+            # Convert to binary
+            with open(pdf_rand_name, 'rb') as f:
+                fn = f"bcn_air_quality_{date.today()}.pdf"
+                if st.download_button("Save to PDF", f, file_name=fn):
+                    os.remove(pdf_rand_name)
+        with col6:
+            email = st.text_input("Email")
+            if email:
+                if st.button("Email PDF"):
+                    with open(pdf_rand_name, 'rb') as f:
+                        data = f.read()
+                        f.close()
+                        encoded = base64.b64encode(data).decode()
+                    send_email(email, encoded)
 
         # Display dataframe
         st.text('Raw Data')
