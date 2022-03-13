@@ -8,13 +8,49 @@ url: https://bcn-open-data-api.herokuapp.com/
 Returns a list of the stations which provide data
 
 **stations/{name}**:<br>
-Returns info for the station {name}, as from list_stations
+Returns info for the station {name} from list_stations. Example:
+```
+    {
+        "Station":"Sants",
+        "District Name":"Sants-Montjuic",
+        "Location":{
+            "type":"Point",
+            "coordinates":[2.1331,41.3788]
+        }
+    }
+```
 
 **stations/{name}/measures/**:<br>
-Returns all the measures from station {name}
+Returns all the measures from station {name}. Example:
+```
+    {
+        "Station":"Sants",
+        "O3":0.0,
+        "NO2":84.0,
+        "PM10":0.0,
+        "Hour":0,
+        "Year":2018,
+        "Month":11,
+        "Day":1,
+        "Air Quality":"Poor",
+        "District Name":"Sants-Montjuic",
+        "Neighborhood Name":"Sants",
+        "Location":{
+            "type":"Point",
+            "coordinates":[2.1331,41.3788]
+        }
+    }
+```
 
-**sstations/{name}/measures/{year}/{month}/{day}**:<br>
-Returns measures from station {name} for the specified day
+**stations/{name}/measures/{year}/{month}/{day}**:<br>
+Returns measures from station {name} for the specified day. Example:
+```
+    [
+        {"Station":"Sants","O3":0.0,"NO2":84.0,"PM10":0.0,"Hour":0,"Year":2018,"Month":11,"Day":1,"Air Quality":"Poor","District Name":"Sants-Montjuic","Neighborhood Name":"Sants","Location":{"type":"Point","coordinates":[2.1331,41.3788]}},
+        {"Station":"Sants","O3":0.0,"NO2":62.0,"PM10":0.0,"Hour":1,"Year":2018,"Month":11,"Day":1,"Air Quality":"Moderate","District Name":"Sants-Montjuic","Neighborhood Name":"Sants","Location":{"type":"Point","coordinates":[2.1331,41.3788]}}
+        ...
+    ]
+```
 
 **/new_measure/**:<br>
 POST command. Introduces a new measure into database<br>
