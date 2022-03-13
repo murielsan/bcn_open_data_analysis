@@ -4,10 +4,10 @@ Barcelona open data analysis mid-project
 ## Endpoints for the API
 url: https://bcn-open-data-api.herokuapp.com/
 
-### **list_stations**:<br>
+### - **list_stations**:<br>
 Returns a list of the stations which provide data
 
-### **stations/{name}**:<br>
+### - **stations/{name}**:<br>
 Returns info for the station {name} from list_stations. Example:
 ```
     {
@@ -20,7 +20,7 @@ Returns info for the station {name} from list_stations. Example:
     }
 ```
 
-### **stations/{name}/measures/**:<br>
+### - **stations/{name}/measures/**:<br>
 Returns all the measures from station {name}. Example:
 ```
     {
@@ -42,7 +42,7 @@ Returns all the measures from station {name}. Example:
     }
 ```
 
-### **stations/{name}/measures/{year}/{month}/{day}**:<br>
+### - **stations/{name}/measures/{year}/{month}/{day}**:<br>
 Returns measures from station {name} for the specified day. Example:
 ```
     [
@@ -52,7 +52,7 @@ Returns measures from station {name} for the specified day. Example:
     ]
 ```
 
-### **stations/{name}/average/{year}**:<br>
+### - **stations/{name}/average/{year}**:<br>
 Returns average measures from a Station for a specific year. Example:
 ```
     [
@@ -66,7 +66,7 @@ Returns average measures from a Station for a specific year. Example:
     ]
 ```
 
-### **stations/{name}/average/{year}/{month}**:<br>
+### - **stations/{name}/average/{year}/{month}**:<br>
 Returns average measures from a Station for a specific month of the year. Example:
 ```
     [
@@ -81,7 +81,7 @@ Returns average measures from a Station for a specific month of the year. Exampl
     ]
 ```
 
-### **new_measure**:<br>
+### - **new_measure**:<br>
 POST command. Introduces a new measure into database<br>
 Requires a dict with the following structure:<br>
 ```
