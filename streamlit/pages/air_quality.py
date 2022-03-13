@@ -1,4 +1,6 @@
 from fileinput import filename
+import random
+import base64
 import streamlit as st
 import pydeck as pdk
 import pandas as pd
@@ -8,6 +10,7 @@ import seaborn as sns
 import webcolors
 from datetime import date
 from data.api_mgr import get_stations_list, get_station_info, get_station_measures_st
+from utils.utils import send_email
 
 def show_air_quality():
 
@@ -25,7 +28,7 @@ def show_air_quality():
         st.session_state.colors = colors
 
     # Selector
-    stations_selected = st.multiselect("Selecciona una estación", stations)    
+    stations_selected = st.multiselect("Please, select a station", stations)    
 
     # Get station positions
     positions = pd.DataFrame(
@@ -79,8 +82,6 @@ def show_air_quality():
         #                             measures['Air Quality'],
         #                             categories=['Good', 'Moderate', 'Poor'],
         #                            ordered=True)
-        pdf_file = PdfPages('Output.pdf')
-
         col1, col2 = st.columns(2)
         col3, col4 = st.columns(2)
 
@@ -90,21 +91,18 @@ def show_air_quality():
             x="Hour", y="O3", hue="Station",
             data=measures, ax=ax, palette=st.session_state.colors)
         ax.set_xticks(range(24))
-        pdf_file.savefig(fig1)
 
         fig2,ax2 = plt.subplots(figsize=(10, 4))
         sns.lineplot(
             x="Hour", y="NO2", hue="Station",
             data=measures, ax=ax2, palette=st.session_state.colors)
         ax2.set_xticks(range(24))
-        pdf_file.savefig(fig2)
 
         fig3,ax3 = plt.subplots(figsize=(10, 4))
         sns.lineplot(
             x="Hour", y="PM10", hue="Station",
             data=measures, ax=ax3, palette=st.session_state.colors)
         ax3.set_xticks(range(24))
-        pdf_file.savefig(fig3)
 
         # Pie chart, where the slices will be ordered and plotted counter-clockwise:  
         values = measures['Air Quality'].value_counts()
@@ -115,8 +113,6 @@ def show_air_quality():
         ax4.pie(sizes, labels=labels, autopct='%1.1f%%',
                 shadow=True, startangle=90)
         ax4.axis('equal')
-        pdf_file.savefig(fig4)
-        pdf_file.close()
         
         
         col1.pyplot(fig1)
@@ -128,10 +124,35 @@ def show_air_quality():
         col4.pyplot(fig4)
         col4.write('Air Quality: Percentage of quality hours')
 
-        # Convert to binary
-        with open('Output.pdf', 'rb') as f:
-            fn = f"bcn_air_quality_{date.today()}.pdf"
-            st.download_button("Save to PDF", f, file_name=fn)
+        col5,col6 = st.columns([1,2])
+        # Download button
+        with col5:
+            st.write('Get your results')
+            # Create pdf file
+            if 'pdf_rand_name' not in st.session_state:
+                pdf_rand_name = f"Output{random.randint(0,65535)}.pdf"
+                st.session_state.pdf_rand_name = pdf_rand_name
+
+            pdf_file = PdfPages(st.session_state.pdf_rand_name)
+            pdf_file.savefig(fig1)
+            pdf_file.savefig(fig2)
+            pdf_file.savefig(fig3)
+            pdf_file.savefig(fig4)
+            pdf_file.close()
+
+            # Convert to binary
+            with open(st.session_state.pdf_rand_name, 'rb') as f:
+                fn = f"bcn_air_quality_{date.today()}.pdf"
+                st.download_button("Save to PDF", f, file_name=fn)
+        with col6:
+            email = st.text_input("Email")
+            if email:
+                if st.button("Email PDF"):
+                    with open(st.session_state.pdf_rand_name, 'rb') as f:
+                        data = f.read()
+                        f.close()
+                        encoded = base64.b64encode(data).decode()
+                    send_email(email, encoded)
 
         # Display dataframe
         st.text('Raw Data')

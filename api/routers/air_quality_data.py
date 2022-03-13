@@ -32,7 +32,7 @@ def get_station_info(name):
 @router.get("/stations/{name}/measures/")
 def get_station_measures(name):
     res = get_data('pollution', filter={'Station': name})
-    return loads(json_util.dumps(res[0]))
+    return loads(json_util.dumps(res))
 
 
 # Measures from a station for a selected date
