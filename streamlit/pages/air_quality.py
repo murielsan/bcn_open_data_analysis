@@ -1,6 +1,5 @@
 from fileinput import filename
 import random
-import os
 import base64
 import streamlit as st
 import pydeck as pdk
@@ -83,9 +82,6 @@ def show_air_quality():
         #                             measures['Air Quality'],
         #                             categories=['Good', 'Moderate', 'Poor'],
         #                            ordered=True)
-        pdf_rand_name = f"Output{random.randint(0,65535)}.pdf"
-        pdf_file = PdfPages(pdf_rand_name)
-
         col1, col2 = st.columns(2)
         col3, col4 = st.columns(2)
 
@@ -95,21 +91,18 @@ def show_air_quality():
             x="Hour", y="O3", hue="Station",
             data=measures, ax=ax, palette=st.session_state.colors)
         ax.set_xticks(range(24))
-        pdf_file.savefig(fig1)
 
         fig2,ax2 = plt.subplots(figsize=(10, 4))
         sns.lineplot(
             x="Hour", y="NO2", hue="Station",
             data=measures, ax=ax2, palette=st.session_state.colors)
         ax2.set_xticks(range(24))
-        pdf_file.savefig(fig2)
 
         fig3,ax3 = plt.subplots(figsize=(10, 4))
         sns.lineplot(
             x="Hour", y="PM10", hue="Station",
             data=measures, ax=ax3, palette=st.session_state.colors)
         ax3.set_xticks(range(24))
-        pdf_file.savefig(fig3)
 
         # Pie chart, where the slices will be ordered and plotted counter-clockwise:  
         values = measures['Air Quality'].value_counts()
@@ -120,8 +113,6 @@ def show_air_quality():
         ax4.pie(sizes, labels=labels, autopct='%1.1f%%',
                 shadow=True, startangle=90)
         ax4.axis('equal')
-        pdf_file.savefig(fig4)
-        pdf_file.close()
         
         
         col1.pyplot(fig1)
@@ -137,16 +128,27 @@ def show_air_quality():
         # Download button
         with col5:
             st.write('Get your results')
+            # Create pdf file
+            if 'pdf_rand_name' not in st.session_state:
+                pdf_rand_name = f"Output{random.randint(0,65535)}.pdf"
+                st.session_state.pdf_rand_name = pdf_rand_name
+
+            pdf_file = PdfPages(st.session_state.pdf_rand_name)
+            pdf_file.savefig(fig1)
+            pdf_file.savefig(fig2)
+            pdf_file.savefig(fig3)
+            pdf_file.savefig(fig4)
+            pdf_file.close()
+
             # Convert to binary
-            with open(pdf_rand_name, 'rb') as f:
+            with open(st.session_state.pdf_rand_name, 'rb') as f:
                 fn = f"bcn_air_quality_{date.today()}.pdf"
-                if st.download_button("Save to PDF", f, file_name=fn):
-                    os.remove(pdf_rand_name)
+                st.download_button("Save to PDF", f, file_name=fn)
         with col6:
             email = st.text_input("Email")
             if email:
                 if st.button("Email PDF"):
-                    with open(pdf_rand_name, 'rb') as f:
+                    with open(st.session_state.pdf_rand_name, 'rb') as f:
                         data = f.read()
                         f.close()
                         encoded = base64.b64encode(data).decode()
