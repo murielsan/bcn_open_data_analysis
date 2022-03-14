@@ -11,11 +11,11 @@ You'll find it under the [*data*](./data/) folder.
 
 I've selected *air quality data* and *bicing stations* for cleaning. It's been a hard job, as data provided is not well structured, contains lots of errors and a strange format.
 
-*Air quality data* started with a csv from a [Kaggle set](https://www.kaggle.com/xvivancos/barcelona-data-sets), but got the most of the data from the [**Barcelona's City Hall Open Data Service**](https://opendata-ajuntament.barcelona.cat/en/), where you'll find loads of data to work with. There's an API to get the data but you can also download CSV files. I chose the API to apply `requests` library methods we learned.
+*Air quality data* started with a csv from a [Kaggle set](https://www.kaggle.com/xvivancos/barcelona-data-sets), but got the most of the data from the [**Barcelona's City Hall Open Data Service**](https://opendata-ajuntament.barcelona.cat/en/), where you'll find loads of data to work with. There's an API to get the data but you can also download CSV files. I chose the API to apply `requests` library methods we learned. Please note that the format of both CSV and json data changed in 2019 so I had to create a dataset compatible with both formats.
 
 For *Bicing Stations* I chose a CSV file, as it was faster and it's not an info constantly updated, so I downloaded the file and begun to work.
 
-All the data has been uploaded to [MongoDB Atlas](https://www.mongodb.com/atlas/database), a cloud deployment of MongoDB.
+All the data has been uploaded to [MongoDB Atlas](https://www.mongodb.com/atlas/database), a cloud hosting for MongoDB.
 
 You'll need [Jupyter Notebook](https://jupyter.org/) to work with this files, although [VSCode](https://code.visualstudio.com/) works great too.
 
@@ -35,9 +35,9 @@ You'll find it under the [*streamlit*](./streamlit/) folder.
 
 We've used [Streamlit](https://streamlit.io/) for this purpose. I've created a multi-page web app with queries to the API. The pages are detailed [below](#Streamlit-APP).
 
-Streamlit app has also been uploaded to Heroku, but this thime as a connection to a GitHub repo. As it's not a repo but a folder inside a repo, I had to add a [buildpack](https://github.com/timanovsky/subdir-heroku-buildpack) which allowed me to specify the folder I wanted to use.
+Streamlit app has also been uploaded to Heroku, but this time as a connection to a GitHub repo. As it's not a repo but a folder inside a repo, I had to add a [buildpack](https://github.com/timanovsky/subdir-heroku-buildpack) which allowed me to specify the folder I wanted to use.
 
-In order to make streamlit work I also had to create a [Procfile](./streamlit/Procfile) file so that Heroku knows how to run this kind of app. I also had to create [runtime.txt](./streamlit/runtime.txt) as I'm using Python 3.10.2 and at the time of creation (March'22) the default runtime was Python 3.9.7. The file [rquirements.txt](./streamlit/requirements.txt) specifies the libraries needed for building the application.
+In order to make streamlit work I also had to create a [Procfile](./streamlit/Procfile) file so that Heroku knows how to run this kind of app. I also had to create [runtime.txt](./streamlit/runtime.txt) as I'm using Python 3.10.2 and at the time of creation (March'22) the default runtime was Python 3.9.7. The file [requirements.txt](./streamlit/requirements.txt) specifies the libraries needed for building the application.
 
 
 # API Endpoints
