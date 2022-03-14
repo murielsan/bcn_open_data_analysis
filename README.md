@@ -35,6 +35,10 @@ You'll find it under the [*streamlit*](./streamlit/) folder.
 
 We've used [Streamlit](https://streamlit.io/) for this purpose. I've created a multi-page web app with queries to the API. The pages are detailed [below](#Streamlit-APP).
 
+For the *air quality* part, I've used a [Mapbox](https://www.mapbox.com/) inside a [PyDeck](https://pydeck.gl/) container to show the position of each station and [Seaborn](https://seaborn.pydata.org/) to create the line charts. I've also needed [Sendgrid](https://devcenter.heroku.com/articles/sendgrid) Add-on for the email part (currently not working, waiting for sendgrid approval).
+
+For the *bicing* part, I've used the [GeoPy](https://geopy.readthedocs.io/en/stable/) library in order to locate (geocode) the input address. As it needs an external service, I've used [Nominatim](https://nominatim.org/) with [OpenStreetMap](https://www.openstreetmap.org/) data.
+
 Streamlit app has also been uploaded to Heroku, but this time as a connection to a GitHub repo. As it's not a repo but a folder inside a repo, I had to add a [buildpack](https://github.com/timanovsky/subdir-heroku-buildpack) which allowed me to specify the folder I wanted to use.
 
 In order to make streamlit work I also had to create a [Procfile](./streamlit/Procfile) file so that Heroku knows how to run this kind of app. I also had to create [runtime.txt](./streamlit/runtime.txt) as I'm using Python 3.10.2 and at the time of creation (March'22) the default runtime was Python 3.9.7. The file [requirements.txt](./streamlit/requirements.txt) specifies the libraries needed for building the application.
@@ -173,10 +177,12 @@ url: https://bcn-open-data-st.herokuapp.com/
 
 ### Air Quality
 Select one or more stations. It will show the location of each station on the map, and the graphics for each measure (O3, NO2 and PM10) for each hour of the day.
-It also shows the percentage of hours with Good, Moderate or Poor air quality
+It also shows the percentage of hours with Good, Moderate or Poor air quality. 
+
+You can export the generated reports as a PDF file.
 
 ### New Measure
-Fill the form to insert a new measure into the database
+Fill the form to insert a new measure into the database. You'll need write access to the database to do this.
 
 ### Bicing
 Find the nearest stations to the specified address! Use the slider to modify the search radio dinamically.
