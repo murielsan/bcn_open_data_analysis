@@ -2,9 +2,9 @@
 This is a small and simple project to prove what we've learned at [CoreCode](https://www.corecode.school/en/bootcamp/big-data-machine-learning) bootcamp until now.<br>
 
 It consists in a three part work:<br>
-1. [Data cleaning](#1.-Data-cleaning)
-2. [Data access API](#2.-Data-access-API)
-3. [Data visualization](#3.-Data-visualization)
+1. [Data cleaning](#Data-cleaning)
+2. [Data access API](#Data-access-API)
+3. [Data visualization](#Data-visualization)
 
 ## 1. Data cleaning
 You'll find it under the [*data*](./data/) folder.
