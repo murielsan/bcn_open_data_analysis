@@ -6,7 +6,7 @@ It consists in a three part work:<br>
 2. [Data access API](#Data-access-API)
 3. [Data visualization](#Data-visualization)
 
-## 1. Data cleaning
+## Data cleaning
 You'll find it under the [*data*](./data/) folder.
 
 I've selected *air quality data* and *bicing stations* for cleaning. It's been a hard job, as data provided is not well structured, contains lots of errors and a strange format.
@@ -19,7 +19,7 @@ All the data has been uploaded to [MongoDB Atlas](https://www.mongodb.com/atlas/
 
 You'll need [Jupyter Notebook](https://jupyter.org/) to work with this files, although [VSCode](https://code.visualstudio.com/) works great too.
 
-## 2. Data access API
+## Data access API
 You'll find it under the [*api*](./api/) folder.
 
 We mainly used [fastapi](https://fastapi.tiangolo.com/) for this part. I've created a set of endpoints for each of the collections created in MongoDB:
@@ -30,7 +30,7 @@ You'll find detailed explanation of the endpoints [below](#API-Endpoints).
 
 The API has been uploaded to [Heroku](https://www.heroku.com/) and deployed inside a docker container.
 
-## 3. Data visualization
+## Data visualization
 You'll find it under the [*streamlit*](./streamlit/) folder.
 
 We've used [Streamlit](https://streamlit.io/) for this purpose. I've created a multi-page web app with queries to the API. The pages are detailed [below](#Streamlit-APP).
