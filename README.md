@@ -1,5 +1,44 @@
 # BCN Open data analysis
-Barcelona open data analysis mid-project
+This is a small and simple project to prove what we've learned at [CoreCode](https://www.corecode.school/en/bootcamp/big-data-machine-learning) bootcamp until now.<br>
+
+It consists in a three part work:<br>
+1. [Data cleaning](#1.-Data-cleaning)
+2. [Data access API](#2.-Data-access-API)
+3. [Data visualization](#3.-Data-visualization)
+
+## 1. Data cleaning
+You'll find it under the [*data*](./data/) folder.
+
+I've selected *air quality data* and *bicing stations* for cleaning. It's been a hard job, as data provided is not well structured, contains lots of errors and a strange format.
+
+*Air quality data* started with a csv from a [Kaggle set](https://www.kaggle.com/xvivancos/barcelona-data-sets), but got the most of the data from the [**Barcelona's City Hall Open Data Service**](https://opendata-ajuntament.barcelona.cat/en/), where you'll find loads of data to work with. There's an API to get the data but you can also download CSV files. I chose the API to apply `requests` library methods we learned.
+
+For *Bicing Stations* I chose a CSV file, as it was faster and it's not an info constantly updated, so I downloaded the file and begun to work.
+
+All the data has been uploaded to [MongoDB Atlas](https://www.mongodb.com/atlas/database), a cloud deployment of MongoDB.
+
+You'll need [Jupyter Notebook](https://jupyter.org/) to work with this files, although [VSCode](https://code.visualstudio.com/) works great too.
+
+## 2. Data access API
+You'll find it under the [*api*](./api/) folder.
+
+We mainly used [fastapi](https://fastapi.tiangolo.com/) for this part. I've created a set of endpoints for each of the collections created in MongoDB:
+- Pollution: for air quality data
+- Bicing: for bicing stations
+
+You'll find detailed explanation of the endpoints [below](#API-Endpoints).
+
+The API has been uploaded to [Heroku](https://www.heroku.com/) and deployed inside a docker container.
+
+## 3. Data visualization
+You'll find it under the [*streamlit*](./streamlit/) folder.
+
+We've used [Streamlit](https://streamlit.io/) for this purpose. I've created a multi-page web app with queries to the API. The pages are detailed [below](#Streamlit-APP).
+
+Streamlit app has also been uploaded to Heroku, but this thime as a connection to a GitHub repo. As it's not a repo but a folder inside a repo, I had to add a [buildpack](https://github.com/timanovsky/subdir-heroku-buildpack) which allowed me to specify the folder I wanted to use.
+
+In order to make streamlit work I also had to create a [Procfile](./streamlit/Procfile) file so that Heroku knows how to run this kind of app. I also had to create [runtime.txt](./streamlit/runtime.txt) as I'm using Python 3.10.2 and at the time of creation (March'22) the default runtime was Python 3.9.7. The file [rquirements.txt](./streamlit/requirements.txt) specifies the libraries needed for building the application.
+
 
 # API Endpoints
 url: https://bcn-open-data-api.herokuapp.com/
@@ -101,6 +140,13 @@ Requires a dict with the following structure:<br>
     }
     *Required fields
 ```
+You **must** have write access to the database to be able to insert new elements. User and password must be provided in the headers:
+```
+{
+    User: "your_db_user"
+    Password: "your_db_password"
+}
+```
 ## Bicing stations
 ### - **list_bicing_stations**:<br>
 Returns the complete list of bicing stations. Example:
@@ -133,7 +179,7 @@ It also shows the percentage of hours with Good, Moderate or Poor air quality
 Fill the form to insert a new measure into the database
 
 ### Bicing
-Find the nearest stations to the specified address!
+Find the nearest stations to the specified address! Use the slider to modify the search radio dinamically.
 
 ### Contact
 Contact info
