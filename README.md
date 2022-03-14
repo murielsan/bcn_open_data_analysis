@@ -4,7 +4,7 @@ This is a small and simple project to prove what we've learned at [CoreCode](htt
 It consists in a three part work:<br>
 1. [Data cleaning](#Data-cleaning)
 2. [Data access API](#Data-access-API)
-3. [Data visualization](#3Data-visualization)
+3. [Data visualization](#Data-visualization)
 
 ## Data cleaning
 You'll find it under the [*data*](./data/) folder.
