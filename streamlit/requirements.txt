@@ -7,3 +7,4 @@ webcolors==1.11.1
 streamlit==1.7.0
 sendgrid==6.0.5
 python-dotenv==0.19.2
+geopy==2.2.0
