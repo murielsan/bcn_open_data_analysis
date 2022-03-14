@@ -20,17 +20,19 @@ def bicing():
         st.session_state.latitude = 41.3839786
 
     near_stations = pd.DataFrame()
-    st.session_state.radio = st.slider("Please select radio in meters", min_value=100, max_value=10_000, step=100, value=100)
+    st.session_state.radio = st.slider("Please select radio in meters", min_value=100, max_value=1000, step=50, value=100)
     addr = st.text_input("Please, introduce an address")
 
     geolocator = Nominatim(user_agent="bcn-open-data-st")
     if "Barcelona" not in addr:
         addr += ", Barcelona"
-    location = geolocator.geocode(addr)
-    st.session_state.latitude = location.latitude
-    st.session_state.longitude = location.longitude
-    near_stations = pd.DataFrame(get_bicing_stations_near(st.session_state.longitude, st.session_state.latitude, st.session_state.radio))
-    
+    location = geolocator.geocode(addr, country_codes='es')
+    if location:
+        st.session_state.latitude = location.latitude
+        st.session_state.longitude = location.longitude
+        near_stations = pd.DataFrame(get_bicing_stations_near(st.session_state.longitude, st.session_state.latitude, st.session_state.radio))
+    else:
+        near_stations = pd.DataFrame() # Empty DataFrame
     
 
     if not near_stations.empty:
