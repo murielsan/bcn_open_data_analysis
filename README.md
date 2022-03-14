@@ -132,5 +132,8 @@ It also shows the percentage of hours with Good, Moderate or Poor air quality
 ### New Measure
 Fill the form to insert a new measure into the database
 
+### Bicing
+Find the nearest stations to the specified address!
+
 ### Contact
 Contact info
