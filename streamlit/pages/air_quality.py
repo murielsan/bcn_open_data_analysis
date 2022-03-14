@@ -1,6 +1,5 @@
 from fileinput import filename
 import random
-import base64
 import streamlit as st
 import pydeck as pdk
 import pandas as pd
@@ -148,11 +147,7 @@ def show_air_quality():
             email = st.text_input("Email")
             if email:
                 if st.button("Email PDF"):
-                    with open(st.session_state.pdf_rand_name, 'rb') as f:
-                        data = f.read()
-                        f.close()
-                        encoded = base64.b64encode(data).decode()
-                    send_email(email, encoded)
+                    send_email(email, st.session_state.pdf_rand_name)
 
         # Display dataframe
         st.text('Raw Data')
