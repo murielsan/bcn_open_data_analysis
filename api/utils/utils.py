@@ -26,7 +26,7 @@ def get_icqa(element, value):
                 elif value > 35:
                     return 0
                 else: return 1
-    except TypeError as te:
+    except TypeError:
         return 0
 
 

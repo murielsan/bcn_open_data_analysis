@@ -1,5 +1,5 @@
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import *
+from sendgrid.helpers.mail import Attachment, FileContent, FileType, FileName, Disposition, ContentId
 from datetime import date
 from dotenv import load_dotenv
 import re
@@ -41,5 +41,5 @@ def send_email(dest, pdf_file):
         print(response.body)
         print(response.headers)
         return("Email sent!")
-    except Exception as e:
+    except Exception:
         return "Error sending mail"

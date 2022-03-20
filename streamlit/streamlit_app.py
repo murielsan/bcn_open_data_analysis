@@ -7,6 +7,12 @@ from pages.bicing import bicing
 # This is needed to preserve session_state in the cloud. Not locally.
 st.session_state.update(st.session_state)
 
+# Page manes
+page_air_quality = 'Air Quality'
+page_new_measure = 'New air measure'
+page_bicing = 'Bicing'
+page_contact = 'Contact'
+
 # Page configuration
 st.set_page_config(
     page_title="BCN Open Data Analysis",
@@ -17,8 +23,8 @@ st.set_page_config(
 
 # Default session_state
 if 'active_page' not in st.session_state:
-    st.session_state.active_page = 'Air Quality'
-    st.session_state.radiobuttons = 'Air Quality'
+    st.session_state.active_page = page_air_quality
+    st.session_state.radiobuttons = page_air_quality
 
 
 # Code of contact page
@@ -29,23 +35,23 @@ def contact():
 
 
 # Callback functions
-def CB_RadioButton():
+def cb_radio_button():
     st.session_state.active_page = st.session_state.radiobuttons
 
 
 # Page selection
 st.sidebar.radio(
-            'Page Navigation', ['Air Quality', 'New air measure', 'Bicing', 'Contact'],
-            key='radiobuttons', on_change=CB_RadioButton
+            'Page Navigation', [page_air_quality, page_new_measure, page_bicing, page_contact],
+            key='radiobuttons', on_change=cb_radio_button
             )
 
 
 # Run the active page
-if st.session_state.active_page == 'Air Quality':
+if st.session_state.active_page == page_air_quality:
     show_air_quality()
-elif st.session_state.active_page == 'New air measure':
+elif st.session_state.active_page == page_new_measure:
     new_air_measure()
-elif st.session_state.active_page == 'Bicing':
+elif st.session_state.active_page == page_bicing:
     bicing()
-elif st.session_state.active_page == 'Contact':
+elif st.session_state.active_page == page_contact:
     contact()
