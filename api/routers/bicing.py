@@ -15,7 +15,7 @@ def get_station_list():
 
 @router.get("/get_bicing_stations_near/{lon}/{lat}/{radio}")
 def get_stations_near(lon: float, lat: float, radio: int):
-    geoJson = {
+    geo_json = {
         "Location":{
             "$near":{            
                 "$geometry":{
@@ -26,5 +26,5 @@ def get_stations_near(lon: float, lat: float, radio: int):
             }
         }
     }
-    res = get_data("bicing",geoJson)
+    res = get_data("bicing",geo_json)
     return loads(json_util.dumps(res))

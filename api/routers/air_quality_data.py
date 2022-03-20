@@ -5,7 +5,7 @@ from models.Measure import Measure
 from database.mongo import get_data, insert_one_data, distinct, insert_one_with_pass, aggregation
 from utils.utils import get_air_quality
 
-
+error_message = {"message": "No data found"}
 
 # Population endpoint
 router = APIRouter()
@@ -44,7 +44,7 @@ def get_station_measures(name: str, year:int, month:int, day:int):
                                'Month': month, 'Day': day})
         return loads(json_util.dumps(res))
     except Exception:
-        return {"message": "No data found"}
+        return error_message
 
 
 # Average measures from a specified station and year
@@ -83,7 +83,7 @@ def get_station_mean(name: str, year: int):
         res = aggregation('pollution', pipe)
         return loads(json_util.dumps(list(res)))
     except Exception:
-        return {"message": "No data found"}    
+        return error_message    
 
 
 # Average for a station on a specific month
@@ -125,7 +125,7 @@ def get_station_mean(name: str, year: int, month: int):
         res = aggregation('pollution', pipe)
         return loads(json_util.dumps(list(res)))
     except Exception:
-        return {"message": "No data found"} 
+        return error_message
 
 
 # Insert new measure, according to Measure class
@@ -155,10 +155,9 @@ async def insert_measure(measure: Measure, user: str = Header(None), password: s
                                         measure.no2,
                                         measure.pm10
                                         )
-            except:
+            except Exception:
                 return {"Error": "Couldn't find station data on database"}
 
-        #inserted = insert_one_data("pollution", measure.dict(by_alias=True))
         inserted = insert_one_with_pass(user, password, "pollution", measure.dict(by_alias=True))
         if not inserted:
             return {"message":"Couldn't connect to database"}

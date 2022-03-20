@@ -20,7 +20,9 @@ def show_air_quality():
     # Select a different color for each station (saved to preserve)
     if 'colors' not in st.session_state:
         colors = {}
-        for s in range(len(stations)):
+        # for s in range(len(stations)):
+        # murielsan 22/03/20: Code quality improve
+        for s, _ in enumerate(stations):
             # Choose a different defined color from webcolors dict
             colors[stations[s]] = webcolors.HTML4_HEX_TO_NAMES[
                                 list(webcolors.HTML4_HEX_TO_NAMES.keys())[s]]
