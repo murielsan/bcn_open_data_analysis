@@ -1,31 +1,46 @@
+# Get values for O3
+def get_o3_val(value):
+    if value > 240:
+        return -2
+    elif value > 180:
+        return -1
+    elif value > 110:
+        return 0
+    else: return 1   
+
+
+# Get values for NO2
+def get_no2_val(value):
+    if value > 400:
+        return -2
+    elif value > 200:
+        return -1
+    elif value > 90:
+        return 0
+    else: return 1
+
+
+# Get values for PM10
+def get_pm10_val(value):
+    if value > 75:
+        return -2
+    elif value > 50:
+        return -1
+    elif value > 35:
+        return 0
+    else: return 1
+
+
 # Define a function to calculate ICQA element quality
 def get_icqa(element, value):
     try:
         match element:
             case "O3":
-                if value > 240:
-                    return -2
-                elif value > 180:
-                    return -1
-                elif value > 110:
-                    return 0
-                else: return 1
+                get_o3_val(value)
             case "NO2":
-                if value > 400:
-                    return -2
-                elif value > 200:
-                    return -1
-                elif value > 90:
-                    return 0
-                else: return 1
+                get_no2_val(value)
             case "PM10":
-                if value > 75:
-                    return -2
-                elif value > 50:
-                    return -1
-                elif value > 35:
-                    return 0
-                else: return 1
+                get_pm10_val(value)
     except TypeError:
         return 0
 
