@@ -1,12 +1,22 @@
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Attachment, FileContent, FileType, FileName, Disposition, ContentId
-from datetime import date
-from dotenv import load_dotenv
-import re
-import os
 import base64
+import os
+import re
+from datetime import date
+
+from dotenv import load_dotenv
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import (
+    Attachment,
+    ContentId,
+    Disposition,
+    FileContent,
+    FileName,
+    FileType,
+    Mail,
+)
 
 load_dotenv()
+
 
 def send_email(dest, pdf_file):
     # First, validate email
@@ -16,30 +26,30 @@ def send_email(dest, pdf_file):
 
     print("Passed validation")
     message = Mail(
-            from_email=os.getenv("EMAIL"),
-            to_emails=dest,
-            subject='Streamlit exported charts',
-            html_content='<strong>Please find attached the requested file</strong>')
+        from_email=os.getenv("EMAIL"),
+        to_emails=dest,
+        subject="Streamlit exported charts",
+        html_content="<strong>Please find attached the requested file</strong>",
+    )
 
-    with open(pdf_file, 'rb') as f:
+    with open(pdf_file, "rb") as f:
         data = f.read()
         f.close()
     encoded = base64.b64encode(data).decode()
     attachment = Attachment()
     attachment.file_content = FileContent(encoded)
-    attachment.file_type = FileType('application/pdf')
+    attachment.file_type = FileType("application/pdf")
     attachment.file_name = FileName(f"Output{date.today()}.pdf")
-    attachment.disposition = Disposition('attachment')
-    attachment.content_id = ContentId('Display charts')
+    attachment.disposition = Disposition("attachment")
+    attachment.content_id = ContentId("Display charts")
     message.attachment = attachment
 
-
     try:
-        sendgrid_client = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
+        sendgrid_client = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
         response = sendgrid_client.send(message)
         print(response.status_code)
         print(response.body)
         print(response.headers)
-        return("Email sent!")
+        return "Email sent!"
     except Exception:
         return "Error sending mail"

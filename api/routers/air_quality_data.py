@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Header
-from bson import json_util
 from json import loads
+
+from bson import json_util
+from database.mongo import (aggregation, distinct, get_data, insert_one_data,
+                            insert_one_with_pass)
+from fastapi import APIRouter, Header
 from models.Measure import Measure
-from database.mongo import get_data, insert_one_data, distinct, insert_one_with_pass, aggregation
 from utils.utils import get_air_quality
 
 error_message = {"message": "No data found"}

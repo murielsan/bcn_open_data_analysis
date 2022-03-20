@@ -1,6 +1,8 @@
-import streamlit as st
 from datetime import date
+
+import streamlit as st
 from data.api_mgr import get_stations_list, set_new_measure
+
 
 def new_air_measure():
 

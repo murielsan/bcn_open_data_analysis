@@ -1,8 +1,9 @@
-import streamlit as st
 import pandas as pd
 import pydeck as pdk
-from geopy.geocoders import Nominatim
+import streamlit as st
 from data.api_mgr import get_bicing_stations_list, get_bicing_stations_near
+from geopy.geocoders import Nominatim
+
 
 def bicing():
     st.title("BCN Open data analysis")
