@@ -1,15 +1,18 @@
-from fileinput import filename
 import random
-import streamlit as st
-import pydeck as pdk
-import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
-import seaborn as sns
-import webcolors
 from datetime import date
-from data.api_mgr import get_stations_list, get_station_info, get_station_measures_st
+from fileinput import filename
+
+import matplotlib.pyplot as plt
+import pandas as pd
+import pydeck as pdk
+import seaborn as sns
+import streamlit as st
+import webcolors
+from data.api_mgr import (get_station_info, get_station_measures_st,
+                          get_stations_list)
+from matplotlib.backends.backend_pdf import PdfPages
 from utils.utils import send_email
+
 
 def show_air_quality():
 

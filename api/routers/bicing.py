@@ -1,8 +1,9 @@
-from fastapi import APIRouter
-from bson import json_util
 from json import loads
-from models.Measure import Measure
+
+from bson import json_util
 from database.mongo import get_data
+from fastapi import APIRouter
+from models.Measure import Measure
 
 # Population endpoint
 router = APIRouter()

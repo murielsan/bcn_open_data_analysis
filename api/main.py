@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+
 from routers import air_quality_data, bicing
 
 app = FastAPI()
