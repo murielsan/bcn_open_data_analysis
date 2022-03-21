@@ -87,9 +87,13 @@ def bicing():
     )
 
     # Calculate distance
-    reference = (location.latitude, location.longitude)
-    near_stations["distance"] = near_stations.apply(
-        lambda x: distance.distance(reference, (x["lat"], x["lon"])).m
-    )
-    # Present nearest stations
-    st.dataframe(near_stations.sort_values("distance", axis=1, inplace=True))
+    if not near_stations.empty:
+        reference = (location.latitude, location.longitude)
+        near_stations["distance"] = near_stations.apply(
+            lambda x: distance.distance(
+                reference,
+                (x["Location"]["coordinates"][0], x["Location"]["coordinates"][1]),
+            ).m
+        )
+        # Present nearest stations
+        st.dataframe(near_stations.sort_values("distance", axis=1, inplace=True))
